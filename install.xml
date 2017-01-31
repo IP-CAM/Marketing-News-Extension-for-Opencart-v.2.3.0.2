@@ -1,0 +1,122 @@
+<modification>
+	<name>Extension Marketing Blog</name>
+	<version>1.0.0.1</version>
+	<link>http://www.bf2tecnologia.com.br</link>
+	<author>BF2 Team</author>
+	<code>extension-marketing-blog</code>
+	
+	<file path="admin/controller/common/column_left.php">
+		<operation>
+			<search trim="true"><![CDATA[if ($this->user->hasPermission('access', 'marketing/marketing')) {]]></search>
+			<add position="before"><![CDATA[
+				if ($this->user->hasPermission('access', 'extension/news')) {
+					$marketing[] = array(
+						'name'	   => $this->language->get('text_news'),
+						'href'     => $this->url->link('extension/news', 'token=' . $this->session->data['token'], true),
+						'children' => array()		
+					);
+				}
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/common/column_left.php">
+		<operation>
+			<search index="1"><![CDATA[
+				$_
+			]]></search>
+			<add position="after"><![CDATA[
+				$_['text_news'] = 'News';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/pt-br/common/column_left.php">
+		<operation>
+			<search index="1"><![CDATA[
+				$_
+			]]></search>
+			<add position="after"><![CDATA[
+				$_['text_news'] = 'Notícias';
+			]]></add>
+		</operation>
+	</file>
+
+	<file path="catalog/controller/common/footer.php">
+		<operation>
+			<search><![CDATA[$data['text_account'] = $this->language->get('text_account');]]></search>
+			<add position="after" index="1"><![CDATA[$data['text_news'] = $this->language->get('text_news');]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$data['account'] = $this->url->link('account/account', '', true);]]></search>
+			<add position="after" index="1"><![CDATA[$data['news'] = $this->url->link('information/news');]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/language/en-gb/common/footer.php">
+		<operation>
+			<search index="1"><![CDATA[
+				$_
+			]]></search>
+			<add position="after"><![CDATA[
+				$_['text_news'] = 'Our News';
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/language/pt-br/common/footer.php">
+		<operation>
+			<search index="1"><![CDATA[
+				$_
+			]]></search>
+			<add position="after"><![CDATA[
+				$_['text_news'] = 'Nossas Notícias';
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/view/theme/*/template/common/footer.tpl">
+		<operation>
+			<search><![CDATA[
+				<?php echo $voucher; ?>
+			]]></search>
+			<add position="before"><![CDATA[
+				<li><a href="<?php echo $news; ?>"><?php echo $text_news; ?></a></li>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/controller/common/seo_url.php,catalog/controller/startup/seo_url.php" error="skip">
+		<operation>
+			<search><![CDATA[
+				if ($url[0] == 'information_id') {
+			]]></search>
+			<add position="before"><![CDATA[
+				if ($url[0] == 'news_id') {
+					$this->request->get['news_id'] = $url[1];
+				}	
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[
+				} elseif (isset($this->request->get['information_id'])) {
+			]]></search>
+			<add position="before"><![CDATA[
+				} elseif (isset($this->request->get['news_id'])) {
+					$this->request->get['route'] = 'information/news/news';
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[
+				if (($data['route'] == 'product/product' && $key == 'product_id') || (($data['route'] == 'product/manufacturer/info' || $data['route'] == 'product/product') && $key == 'manufacturer_id') || ($data['route'] == 'information/information' && $key == 'information_id')) {
+			]]></search>
+			<add position="replace"><![CDATA[
+				if (($data['route'] == 'information/news/news' && $key == 'news_id') || ($data['route'] == 'product/product' && $key == 'product_id') || (($data['route'] == 'product/manufacturer/info' || $data['route'] == 'product/product') && $key == 'manufacturer_id') || ($data['route'] == 'information/information' && $key == 'information_id')) {
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[
+				if ($query->row['query'] && $url[0] != 'information_id' && $url[0] != 'manufacturer_id' && $url[0] != 'category_id' && $url[0] != 'product_id') {
+			]]></search>
+			<add position="replace"><![CDATA[
+				if ($query->row['query'] && $url[0] != 'information_id' && $url[0] != 'manufacturer_id' && $url[0] != 'category_id' && $url[0] != 'product_id' && $url[0] != 'news_id') {
+			]]></add>
+		</operation>
+	</file>
+</modification>
